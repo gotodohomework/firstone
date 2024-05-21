@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:influsion_4_28/utils/clock.dart';
 import 'package:wave/config.dart';
@@ -241,8 +242,10 @@ class _MyWidgetState extends State<Home> {
                           width: 350.0, // 自定义内容的宽度
                           height: 220.0, // 自定义内容的高度
 
-                          child: ListView
+                          child: Column
+                              // Column
                               (
+                            crossAxisAlignment: CrossAxisAlignment.start,
 
                             children: [
                               //新床名
@@ -267,11 +270,34 @@ class _MyWidgetState extends State<Home> {
                                 ),
                               ),
 
-                              SizedBox(height: 50), // 添加垂直间距
+                              SizedBox(height: 33), // 添加垂直间距
 
                               //直接解绑
-                              GestureDetector(
-                                onTap: () {
+                              TextButton
+                              (
+                                style: ButtonStyle(
+                                  // 设置按钮背景颜色
+                                  backgroundColor:
+                                      MaterialStateProperty.all<Color>(
+                                          Colors.blue),
+                                  // 设置按钮最小大小
+                                  // minimumSize: MaterialStateProperty.all<Size>(
+                                  //     Size(150, 50)),
+                                  // 设置按钮内边距
+                                  padding: MaterialStateProperty.all<
+                                      EdgeInsetsGeometry>(
+                                    EdgeInsets.symmetric(
+                                        horizontal: 20, vertical: 10),
+                                  ),
+                                  // 设置按钮形状（可选）
+                                  shape: MaterialStateProperty.all<
+                                      RoundedRectangleBorder>(
+                                    RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(18.0),
+                                    ),
+                                  ),
+                                ),
+                                onPressed: () {
                                   // 当按钮被按下时，弹出提示框
                                   showDialog(
                                     context: context,
@@ -293,7 +319,7 @@ class _MyWidgetState extends State<Home> {
                                             onPressed: () async {
                                               if (await changeStatus(
                                                   bedList[i]["bedId"],
-                                                  bedList[i]["bedName"])) {
+                                                  bedList[i]["bedName"], bedList[i]["bedStatus"])) {
                                                 //操作成功提示
                                                 showToast(0);
                                               } else {
@@ -315,7 +341,7 @@ class _MyWidgetState extends State<Home> {
                                 child: Text(
                                   '直接解绑',
                                   style: TextStyle(
-                                    color: Colors.blue,
+                                    color: Colors.white,
                                   ),
                                 ),
                               )
@@ -665,13 +691,19 @@ class _MyWidgetState extends State<Home> {
   }
 
   //修改床位状态
-  Future<bool> changeStatus(int bedId, String bedname) async {
-    print("修改用户状态");
+  Future<bool> changeStatus(int bedId, String bedname, String bedStauts) async {
+   
+    if(bedStauts == '1'){
+      bedStauts = '0';
+    }else if( bedStauts == '1'){
+       bedStauts = '0';
+    }
+
+
     File file = File(path);
-    print("ID：${bedId}");
-    print("名字:${bedname}");
+   
     Map<String, dynamic> responseData =
-        await api.changeBedStatus(file, bedId, bedname);
+        await api.changeBedStatus(file, bedId, bedname,bedStauts);
     bool flag = false;
     setState(() {
       var code = responseData['code'];

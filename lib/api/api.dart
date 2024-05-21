@@ -99,7 +99,7 @@ Future<dynamic> addBedInfo(File file, String newbedname) async {
 }
 
 //修改床位状态
-Future<dynamic> changeBedStatus(File file, int bedId, String bedname) async {
+Future<dynamic> changeBedStatus(File file, int bedId, String bedname ,String bedStauts) async {
   
 
   // 构建 FormData 对象
@@ -112,6 +112,7 @@ Future<dynamic> changeBedStatus(File file, int bedId, String bedname) async {
     'bedId': bedId,
     'bedname': bedname,
     'stutas': 0,
+    'bedStauts':bedStauts
   });
 
   // 发送 put 请求
