@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:influsion_4_28/utils/clock.dart';
 import 'package:wave/config.dart';
@@ -65,15 +64,15 @@ class _MyWidgetState extends State<Home> {
   //输液瓶正/异常配置
   //正常
   var normalcolor = [
-    Color(0xFFE8F4FF)!,
-    Color(0xFF1890FF)!,
+    Color(0xFFE8F4FF),
+    Color(0xFF1890FF),
     // Color(0xFFE0F7FA)!,
     // Colors.indigo[100]!
   ];
   //异常
   var abnormalcolor = [
-    Color(0xFFFFEDED)!,
-    Color(0xFFFF4949)!,
+    Color(0xFFFFEDED),
+    Color(0xFFFF4949),
     // Color(0xFFE0F7FA)!,
     // Colors.indigo[100]!
   ];
@@ -408,24 +407,6 @@ class _MyWidgetState extends State<Home> {
   Widget bedStatus(int i) {
     String alarm = '未知:${bedList[i]["alarm"]}';
 
-    String icons = '未知';
-
-    if (bedList[i]["alarm"] == '01') {
-      alarm = '缺液警告';
-      icons = '缺液警告';
-    } else if (bedList[i]["alarm"] == '02') {
-      alarm = '滴速异常';
-      icons = '滴速异常';
-    } else if (bedList[i]["alarm"] == '03') {
-      alarm = '设备故障';
-      icons = '设备故障';
-    } else if (bedList[i]["alarm"] == '04') {
-      alarm = '电压警告';
-      icons = '电压警告';
-    } else if (bedList[i]["alarm"] == '00') {
-      alarm = '正常';
-      icons = '正常';
-    }
     return Stack (
       alignment: Alignment.center,
       children: [
