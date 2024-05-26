@@ -16,7 +16,7 @@ class Login extends StatelessWidget {
         body: Container(
             decoration: BoxDecoration(
               image: DecorationImage(
-                image: AssetImage('img/background.png'), // 设置背景图片
+                image: AssetImage('assets/img/background.png'), // 设置背景图片
                 fit: BoxFit.cover, // 让背景图片铺满整个容器
               ),
             ),
@@ -72,7 +72,7 @@ class _LoginIndexState extends State<LoginIndex> {
           ),
           child: Row(
             children: [
-              Image.asset('img/login.png'),
+              Image.asset('assets/img/login.png'),
               Container(
                   margin: EdgeInsets.all(25.0),
                   height: 400,
@@ -153,7 +153,7 @@ class _LoginIndexState extends State<LoginIndex> {
                                             Radius.circular(25.0))))),
                             //登录验证与提交
                             onPressed: () async {
-                              if (await openFileExplorer()) {
+                              if (await openFileExplorer(true)) {
                                 Get.to(Home());
                               } else {
                                 showToast(0);
@@ -198,26 +198,45 @@ class _LoginIndexState extends State<LoginIndex> {
   //初始化跳转控制 库
   Future<void> isHasSecret() async {
     var insertResult = await dbHelper.fetchItems();
+
+    //查库有无密钥
     if (insertResult.isNotEmpty) {
       //有数据，执行跳转
       Get.to(Home());
     } else {
-      //无数据，执行跳转
+      //数据库无数据，再查内部文件有无密钥  ../../assets/secretkey
+      if (await hasSecret()) {
+        //有数据,将数据存库
+        print("有数据11111111111111");
+
+        if (await openFileExplorer(false)) {
+          Get.to(Home());
+        }
+      } else {
+        print("无数据");
+      }
       return;
     }
   }
 
   //密钥存库
-  Future<bool> openFileExplorer() async {
-    //获取文件内容
-    var result = await uploadFileToProject();
+  Future<bool> openFileExplorer(bool flag) async {
+    var result;
+    //手动上传
+    if (flag) {
+      //获取文件内容
+      result = await uploadFileToProject(flag);
+    } else {
+      //密钥在项目里，读出存库
+      //获取文件内容
+      result = await uploadFileToProject(flag);
+    }
     // 插入数据
     await dbHelper.insertItem(result);
     var insertResult = await dbHelper.fetchItems();
     if (insertResult.isNotEmpty) {
       return true;
     } else {
-      ;
       return false;
     }
   }
@@ -233,7 +252,7 @@ class LogInIcon extends StatelessWidget {
       //   "static/logo.png",
       // ),
       title: const Text(
-        " ",
+        "",
         style: TextStyle(
           fontSize: 20,
           fontWeight: FontWeight.w300,

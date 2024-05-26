@@ -32,7 +32,8 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
-    - img/background.png
-    - img/login.png
-    - img/icon/
-    - img/nullData.png
+    - assets/img/background.png
+    - assets/img/login.png
+    - assets/img/icon/
+    - assets/img/nullData.png
+    - assets/secretkey/31010

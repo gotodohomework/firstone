@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:influsion_4_28/utils/clock.dart';
@@ -23,7 +22,6 @@ class Home extends StatefulWidget {
 
 class _MyWidgetState extends State<Home> {
   // final String data; // 接收传递过来的数据
-
 
   //当前时间
   var currentTime;
@@ -95,7 +93,6 @@ class _MyWidgetState extends State<Home> {
       //启动已使用时间倒计时
       this._timer1 = new Timer.periodic(Duration(seconds: 10), updateTime);
     });
-
   }
 
   @override
@@ -171,7 +168,6 @@ class _MyWidgetState extends State<Home> {
                   ))
             ],
           ),
-
           body: Padding(
             padding: const EdgeInsets.all(0.0),
             child: RefreshIndicator(
@@ -199,7 +195,7 @@ class _MyWidgetState extends State<Home> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Image.asset('img/nullData.png'),
+                Image.asset('assets/img/nullData.png'),
                 Text('暂无数据，请尝试刷新/确保导入了正确的文件。')
               ],
             ))
@@ -241,10 +237,10 @@ class _MyWidgetState extends State<Home> {
                           width: 350.0, // 自定义内容的宽度
                           height: 220.0, // 自定义内容的高度
 
-                          child: Column
+                          child: ListView
                               // Column
                               (
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                            // crossAxisAlignment: CrossAxisAlignment.start,
 
                             children: [
                               //新床名
@@ -272,31 +268,8 @@ class _MyWidgetState extends State<Home> {
                               SizedBox(height: 33), // 添加垂直间距
 
                               //直接解绑
-                              TextButton
-                              (
-                                style: ButtonStyle(
-                                  // 设置按钮背景颜色
-                                  backgroundColor:
-                                      MaterialStateProperty.all<Color>(
-                                          Colors.blue),
-                                  // 设置按钮最小大小
-                                  // minimumSize: MaterialStateProperty.all<Size>(
-                                  //     Size(150, 50)),
-                                  // 设置按钮内边距
-                                  padding: MaterialStateProperty.all<
-                                      EdgeInsetsGeometry>(
-                                    EdgeInsets.symmetric(
-                                        horizontal: 20, vertical: 10),
-                                  ),
-                                  // 设置按钮形状（可选）
-                                  shape: MaterialStateProperty.all<
-                                      RoundedRectangleBorder>(
-                                    RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(18.0),
-                                    ),
-                                  ),
-                                ),
-                                onPressed: () {
+                              GestureDetector(
+                                onTap: () {
                                   // 当按钮被按下时，弹出提示框
                                   showDialog(
                                     context: context,
@@ -318,7 +291,8 @@ class _MyWidgetState extends State<Home> {
                                             onPressed: () async {
                                               if (await changeStatus(
                                                   bedList[i]["bedId"],
-                                                  bedList[i]["bedName"], bedList[i]["bedStatus"])) {
+                                                  bedList[i]["bedName"],
+                                                  bedList[i]["bedStatus"])) {
                                                 //操作成功提示
                                                 showToast(0);
                                               } else {
@@ -340,7 +314,7 @@ class _MyWidgetState extends State<Home> {
                                 child: Text(
                                   '直接解绑',
                                   style: TextStyle(
-                                    color: Colors.white,
+                                    color: Colors.lightBlue,
                                   ),
                                 ),
                               )
@@ -352,7 +326,6 @@ class _MyWidgetState extends State<Home> {
                         actions: [
                           TextButton(
                             onPressed: () {
-                          
                               Navigator.of(context).pop(); // 关闭对话框
                             },
                             child: Text("取消"),
@@ -395,8 +368,7 @@ class _MyWidgetState extends State<Home> {
                 style: ButtonStyle(
                   shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                     RoundedRectangleBorder(
-                      borderRadius:
-                          BorderRadius.circular(1.0), 
+                      borderRadius: BorderRadius.circular(1.0),
                     ),
                   ),
                 ),
@@ -407,7 +379,7 @@ class _MyWidgetState extends State<Home> {
   Widget bedStatus(int i) {
     String alarm = '未知:${bedList[i]["alarm"]}';
 
-    return Stack (
+    return Stack(
       alignment: Alignment.center,
       children: [
         Positioned(
@@ -451,7 +423,6 @@ class _MyWidgetState extends State<Home> {
                     fontSize: 15, // 可选：设置文本字体大小
                   ),
                 ),
-
               ],
             ))),
         Positioned(
@@ -486,7 +457,7 @@ class _MyWidgetState extends State<Home> {
                   child: Container(
                 width: 100,
                 height: 150,
-                child: Image.asset('img/icon/输液瓶测试.png'),
+                child: Image.asset('assets/img/icon/输液瓶测试.png'),
               )),
             ],
           ),
@@ -576,17 +547,18 @@ class _MyWidgetState extends State<Home> {
     );
   }
 
-
-
-  //删除密钥 库
+  //删除密钥 库+文件
   Future<void> deleteSecret() async {
     print("删除密钥执行");
-
+    //删库中密钥
     dbHelper.deleteItem();
+    
     var insertResult = await dbHelper.fetchItems();
     if (insertResult.isNotEmpty) {
       print('删除失败!');
     } else {
+      // 删文件中密钥
+      deleteFile();
       Get.offAll(Login());
     }
   }
@@ -610,11 +582,8 @@ class _MyWidgetState extends State<Home> {
     File file = File(path);
     var hospitalInfo = await api.getInfo(file);
     setState(() {
-      
       hospitalName = hospitalInfo["data"]["hospital"];
       department = hospitalInfo["data"]["department"];
-
-
     });
 
     getlistdepartment();
@@ -623,33 +592,13 @@ class _MyWidgetState extends State<Home> {
 //请求床位数据
   Future<void> _getList() async {
     File file = File(path);
-    print("abab1");
     Map<String, dynamic> responseData = await api.getListData(file);
-    bedList = responseData['list'];
-    for (var bed in bedList) {
-      try {
-        // 解析原始的 usertime 字符串
-        List<String> timeParts = bed['usertime'].split(':');
-        int days = int.parse(timeParts[0]);
-        int hours = int.parse(timeParts[1]);
-        int minutes = int.parse(timeParts[2]);
-
-        days = days * 60;
-        // 将更新后的时间重新设置到 bed 对象中
-        bed['usertime'] =
-            '${days.toString().padLeft(2, '0')}:${hours.toString().padLeft(2, '0')}:${minutes.toString().padLeft(2, '0')}';
-        print("更新后时间：${bed['usertime']},I:${bed}");
-      } catch (e) {
-        print(e);
-      }
-
-    }
+   
 
     setState(() {
-
       //请求数据
       total = int.parse(responseData['total']);
-      bedList = bedList;
+      bedList = responseData['list'];
 
       print('Total: ${total}');
       print('第一个床位的名字: ${bedList}');
@@ -659,7 +608,6 @@ class _MyWidgetState extends State<Home> {
   Future<bool> addBed(String newbedname) async {
     print("添加用户");
     File file = File(path);
-    print("abab1");
     Map<String, dynamic> responseData = await api.addBedInfo(file, newbedname);
     bool flag = false;
     setState(() {
@@ -667,24 +615,21 @@ class _MyWidgetState extends State<Home> {
       (code == 200) ? flag = true : flag = false;
       print('code: $code');
     });
-    print("abab1${flag}");
     return flag;
   }
 
   //修改床位状态
   Future<bool> changeStatus(int bedId, String bedname, String bedStauts) async {
-   
-    if(bedStauts == '1'){
+    if (bedStauts == '1') {
       bedStauts = '0';
-    }else if( bedStauts == '1'){
-       bedStauts = '0';
+    } else if (bedStauts == '1') {
+      bedStauts = '0';
     }
 
-
     File file = File(path);
-   
+
     Map<String, dynamic> responseData =
-        await api.changeBedStatus(file, bedId, bedname,bedStauts);
+        await api.changeBedStatus(file, bedId, bedname, bedStauts);
     bool flag = false;
     setState(() {
       var code = responseData['code'];
@@ -692,14 +637,11 @@ class _MyWidgetState extends State<Home> {
       (code == 200) ? flag = true : flag = false;
       print('code: $code');
     });
-
-    print("abab1${flag}");
     return flag;
   }
 
   Future<bool> changeInfo(int bedId, String bedname, String hospitalName,
       String dropdownValue) async {
-
     File file = File(path);
     Map<String, dynamic> responseData = await api.changeBedInfo(
         file, bedId, bedname, dropdownValue, hospitalName);
