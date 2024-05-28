@@ -45,5 +45,15 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+
+
+	<!-- 申请文件上传 -->
+	<key>NSPhotoLibraryUsageDescription</key>
+<string>App needs access to photo library to select files.</string>
+<key>NSDocumentsFolderUsageDescription</key>
+<string>App needs access to documents folder to select files.</string>
+<key>NSFileProviderPresenceUsageDescription</key>
+<string>App needs access to files in the device's file provider storage.</string>
+
 </dict>
 </plist>
