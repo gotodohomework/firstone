@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -54,7 +56,10 @@ class _LoginIndexState extends State<LoginIndex> {
 
   @override
   void initState() {
+    //请求文件访问权限
+
     super.initState();
+    requestPermissions();
 //查是否存有数据，有则直接跳转，无则留在登录
     isHasSecret();
     // result = fetchItems();
@@ -153,8 +158,9 @@ class _LoginIndexState extends State<LoginIndex> {
                                             Radius.circular(25.0))))),
                             //登录验证与提交
                             onPressed: () async {
+                              //调用读文件方法，用户手动上传，为true
                               if (await openFileExplorer(true)) {
-                                Get.to(Home());
+                                 Get.off(Home());
                               } else {
                                 showToast(0);
                               }
@@ -202,20 +208,27 @@ class _LoginIndexState extends State<LoginIndex> {
     //查库有无密钥
     if (insertResult.isNotEmpty) {
       //有数据，执行跳转
-      Get.to(Home());
+        Get.off(Home());
     } else {
-      //数据库无数据，再查内部文件有无密钥  ../../assets/secretkey
-      if (await hasSecret()) {
-        //有数据,将数据存库
-        print("有数据11111111111111");
-
-        if (await openFileExplorer(false)) {
-          Get.to(Home());
+      if (Platform.isAndroid) {
+        //数据库无数据，再查内部文件有无密钥  ../../assets/secretkey
+        if (await hasSecret()) {
+          //有数据,将数据存库
+          print("有数据11111111111111");
+          //有数据，将密钥存库
+          if (await openFileExplorer(false)) {
+             Get.off(Home());
+            // Get.to(Home());
+          }
+        } else {
+          print("无数据");
         }
-      } else {
-        print("无数据");
+        return;
+      } else if (Platform.isIOS) {
+        //查ios端对应路径下有无密钥  ?
+
+        return;
       }
-      return;
     }
   }
 

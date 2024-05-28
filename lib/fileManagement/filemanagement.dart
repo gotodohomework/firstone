@@ -5,6 +5,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:path/path.dart' as path;
 import 'dart:convert';
+import 'package:permission_handler/permission_handler.dart';
 
 Future<void> writeFile(String fileName, String content) async {
   // 获取应用的文档目录
@@ -40,9 +41,13 @@ Future<String> readFile1(String fileName) async {
 }
 
 Future<dynamic> uploadFileToProject(bool flag) async {
-  final directory = await getApplicationDocumentsDirectory();
-  final internalfilePath = '${directory.path}/31010';
-  print("文文文件路径${directory.path}/31010");
+  // final directory = await getApplicationDocumentsDirectory();  getExternalStorageDirectory()\
+
+  // final directory = await getExternalStorageDirectory();
+  // final internalfilePath = '${directory!.path}/31010';
+  // print("文文文件路径${directory.path}/31010");
+
+  final internalfilePath = '/storage/emulated/0/31010';
 
   //用户手动上传
   if (flag) {
@@ -53,10 +58,17 @@ Future<dynamic> uploadFileToProject(bool flag) async {
       if (uploadfilePath != null) {
         var secret = await File(uploadfilePath).readAsString();
 
-        //将项目内存的密钥替换为用户上传的文件
-        replaceFile(uploadfilePath, internalfilePath);
+        //不同平台文件替换方法
+        if (Platform.isAndroid) {
+          replaceFile(uploadfilePath, internalfilePath);
+        } else if (Platform.isIOS) {
+          //将项目内存的密钥替换为用户上传的文件
+          final uploadfilePathforios = await getApplicationDocumentsDirectory();
+          replaceFile(uploadfilePath, uploadfilePathforios.path);
+        }
 
         return {'secret': secret, 'name': result.files.first.name};
+        //  if (Platform.isAndroid) {} else if (Platform.isIOS) {}//ios读文件
       } else {
         return ''; // 或者抛出异常，具体取决于你的需求
       }
@@ -66,8 +78,10 @@ Future<dynamic> uploadFileToProject(bool flag) async {
     }
   } else {
     //读项目中的密钥
-    // 将内容写入文件
+    // 将文件内容读出
+    final internalfilePath = '/storage/emulated/0/31010';
     File file = File(internalfilePath);
+
     var secret = await file.readAsString();
     return {'secret': secret, 'name': '31010'};
   }
@@ -89,15 +103,24 @@ Future<bool> replaceFile(String sourcePath, String targetPath) async {
 Future<bool> deleteFile() async {
   try {
     // 获取应用程序的文档目录
-    final documentsDirectory = await getApplicationDocumentsDirectory();
-    final file = File('${documentsDirectory.path}/31010');
+    final directory = await getApplicationDocumentsDirectory();
+
+    // final directory = await getExternalStorageDirectory();
+    final filePathforios = directory.path;
+    // final file = File(filePath);
+
+    final filePath = '/storage/emulated/0/31010';
+    var file;
+
+    //不同平台文件替换方法
+    if (Platform.isAndroid) {
+      file = File(filePath);
+    } else if (Platform.isIOS) {
+      file = File(filePathforios);
+    }
+
     // 清空文件内容
     await file.delete();
-    // //检查
-    // bool text =  doesFileExist('${documentsDirectory.path}/31010') as bool;
-    // if(text){
-    //    print("成功！！");
-    // }
     return true;
   } catch (e) {
     print('文件删除失败：$e');
@@ -130,17 +153,52 @@ Future<String> convertFile(String content, String name) async {
 Future<bool> hasSecret() async {
   // 获取应用程序的文档目录
   final directory = await getApplicationDocumentsDirectory();
-  final filePath = '${directory.path}/31010';
-  final file = File(filePath);
 
-  // 检查文件是否存在
+  // final directory = await getExternalStorageDirectory();
+  final filePathforios = directory.path;
+  // final file = File(filePath);
+
+  final filePath = '/storage/emulated/0/31010';
+  var file;
+
+  //不同平台文件替换方法
+  if (Platform.isAndroid) {
+    file = File(filePath);
+  } else if (Platform.isIOS) {
+    file = File(filePathforios);
+  }
+// 检查文件是否存在
   final exists = await file.exists();
 
   if (exists) {
-    print('文件存在: $filePath');
+    print(
+        '文件存在:filePathfilePathfilePathfilePath $filePath,filePathforiosfilePathforiosfilePathforiosfilePathforiosfilePathforios:$filePathforios');
     return true;
   } else {
-    print('文件不存在: $filePath');
+    print(
+        '文件存在:filePathfilePathfilePathfilePath $filePath,filePathforiosfilePathforiosfilePathforiosfilePathforiosfilePathforios:$filePathforios');
+    return false;
+  }
+}
+
+//获取文件读取权限await Permission.storage.request().isGranted
+Future<bool> requestPermissions() async {
+  print("申请提交");
+  if (await Permission.manageExternalStorage.request().isGranted) {
+    print("申请提交       成功");
+    await uploadFileToProject(false);
+    print("调用后------------------");
+
+    var status = await Permission.storage.status;
+    if (status.isGranted) {
+      print("权限已授予");
+    } else {
+      print("权限未授予");
+    }
+
+    return true;
+  } else {
+    print("申请提交       失败");
     return false;
   }
 }

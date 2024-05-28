@@ -354,7 +354,7 @@ class _MyWidgetState extends State<Home> {
                                 }
                                 //外层
                                 Navigator.of(contextofform).pop();
-
+                                initState();
                                 await _getList();
                               });
                             },
@@ -377,7 +377,19 @@ class _MyWidgetState extends State<Home> {
 
   //设备异常信息展示文本
   Widget bedStatus(int i) {
-    String alarm = '未知:${bedList[i]["alarm"]}';
+    // String alarm = '未知:${bedList[i]["alarm"]}';
+    String alarm = '无';
+    if (bedList[i]["alarm"] == '01') {
+      alarm = '缺液警告';
+    } else if (bedList[i]["alarm"] == '02') {
+      alarm = '滴速异常';
+    } else if (bedList[i]["alarm"] == '03') {
+      alarm = '设备故障';
+    } else if (bedList[i]["alarm"] == '04') {
+      alarm = '电压警告';
+    } else if (bedList[i]["alarm"] == '00') {
+      alarm = '正常';
+    }
 
     return Stack(
       alignment: Alignment.center,
@@ -552,7 +564,7 @@ class _MyWidgetState extends State<Home> {
     print("删除密钥执行");
     //删库中密钥
     dbHelper.deleteItem();
-    
+
     var insertResult = await dbHelper.fetchItems();
     if (insertResult.isNotEmpty) {
       print('删除失败!');
@@ -593,13 +605,13 @@ class _MyWidgetState extends State<Home> {
   Future<void> _getList() async {
     File file = File(path);
     Map<String, dynamic> responseData = await api.getListData(file);
-   
 
     setState(() {
       //请求数据
       total = int.parse(responseData['total']);
       bedList = responseData['list'];
 
+      print('------------------------------------------------');
       print('Total: ${total}');
       print('第一个床位的名字: ${bedList}');
     });
@@ -635,7 +647,7 @@ class _MyWidgetState extends State<Home> {
       var code = responseData['code'];
       msg = responseData['msg'];
       (code == 200) ? flag = true : flag = false;
-      print('code: $code');
+      print('1111111111111111111111111code: $code');
     });
     return flag;
   }
@@ -676,7 +688,7 @@ class _MyWidgetState extends State<Home> {
     });
   }
 
-  //床位使用时间计时 按秒调用更新
+  //床位使用时间计时 按10秒调用更新
   setTime1(i) {
     usedtime = bedList[i]["usertime"];
 

@@ -5,7 +5,7 @@ class Api{
  // 创建一个 Dio 客户端实例
   var dio = Dio();
 
-  var url = 'http://192.168.100.32:38848';
+  var url = 'http://159.75.111.41:38848';
 //获取列表
 Future<dynamic> getListData(File file) async {
  
@@ -24,7 +24,6 @@ Future<dynamic> getListData(File file) async {
     data: formData, // 将 FormData 作为请求数据
     options: Options(
       headers: {
-        'Authorization': 'Bearer your-auth-token', // 需要的请求头
         'Content-Type': 'multipart/form-data',
       },
     ),
@@ -56,7 +55,6 @@ Future<dynamic> getInfo(File file) async {
     data: formData, // 将 FormData 作为请求数据
     options: Options(
       headers: {
-        'Authorization': 'Bearer your-auth-token', // 需要的请求头
         'Content-Type': 'multipart/form-data',
       },
     ),
@@ -85,7 +83,6 @@ Future<dynamic> addBedInfo(File file, String newbedname) async {
     data: formData, // 将 FormData 作为请求数据
     options: Options(
       headers: {
-        'Authorization': 'Bearer your-auth-token', // 需要的请求头
         'Content-Type': 'multipart/form-data',
       },
     ),
@@ -121,7 +118,6 @@ Future<dynamic> changeBedStatus(File file, int bedId, String bedname ,String bed
     data: formData, // 将 FormData 作为请求数据
     options: Options(
       headers: {
-        'Authorization': 'Bearer your-auth-token', // 需要的请求头
         'Content-Type': 'multipart/form-data',
       },
     ),
@@ -151,7 +147,6 @@ Future<dynamic> getBedbaojing(File file) async {
     data: formData, // 将 FormData 作为请求数据
     options: Options(
       headers: {
-        'Authorization': 'Bearer your-auth-token', // 需要的请求头
         'Content-Type': 'multipart/form-data',
       },
     ),
@@ -178,7 +173,6 @@ Future<dynamic> listdepartment(String hospitalname) async {
     // 将 FormData 作为请求数据
     options: Options(
       headers: {
-        'Authorization': 'Bearer your-auth-token', // 需要的请求头
         'Content-Type': 'multipart/x-www-form-urlencoded',
       },
     ),
@@ -213,7 +207,6 @@ Future<dynamic> changeBedInfo(File file, int bedId, String bedname, String depar
     data: formData, // 将 FormData 作为请求数据
     options: Options(
       headers: {
-        'Authorization': 'Bearer your-auth-token', // 需要的请求头
         'Content-Type': 'multipart/form-data',
       },
     ),
