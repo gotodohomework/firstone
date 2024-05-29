@@ -377,19 +377,19 @@ class _MyWidgetState extends State<Home> {
 
   //设备异常信息展示文本
   Widget bedStatus(int i) {
-    // String alarm = '未知:${bedList[i]["alarm"]}';
+    String alarm = '无警告';
     // String alarm = '无';
-    // if (bedList[i]["alarm"] == '01') {
-    //   alarm = '缺液警告';
-    // } else if (bedList[i]["alarm"] == '02') {
-    //   alarm = '滴速异常';
-    // } else if (bedList[i]["alarm"] == '03') {
-    //   alarm = '设备故障';
-    // } else if (bedList[i]["alarm"] == '04') {
-    //   alarm = '电压警告';
-    // } else if (bedList[i]["alarm"] == '00') {
-    //   alarm = '正常';
-    // }
+    if (bedList[i]["alarm"] == '缺液警报') {
+      alarm = '缺液警告';
+    } else if (bedList[i]["alarm"] == '滴速异常') {
+      alarm = '滴速异常';
+    } else if (bedList[i]["alarm"] == '设备故障') {
+      alarm = '设备故障';
+    } else if (bedList[i]["alarm"] == '电压警告') {
+      alarm = '电压警告';
+    } else if (bedList[i]["alarm"] == '无警告') {
+      alarm = '无警告';
+    }
 
     return Stack(
       alignment: Alignment.center,
@@ -413,7 +413,7 @@ class _MyWidgetState extends State<Home> {
                 child: Column(
               children: [
                 Text(
-                  "${(bedList[i]["bedStatus"] == '0') ? '未锁定' : '已锁定'}",
+                  "${(alarm == '无警告') ? '未锁定' : '已锁定'}",
                   style: TextStyle(
                     color: Colors.black, // 可选：设置文本颜色
                     fontSize: 15, // 可选：设置文本字体大小
@@ -421,7 +421,7 @@ class _MyWidgetState extends State<Home> {
                 ),
                 SizedBox(height: 8),
                 Text(
-                  "${bedList[i]["alarm"]}",
+                  "${alarm}",
                   style: TextStyle(
                     color: Colors.black, // 可选：设置文本颜色
                     fontSize: 15, // 可选：设置文本字体大小
@@ -452,7 +452,7 @@ class _MyWidgetState extends State<Home> {
                       height: 65,
                       child: WaveWidget(
                         config: CustomConfig(
-                          colors: ((bedList[i]["alarm"] == '00')
+                          colors: ((alarm== '无警告')
                               ? normalcolor
                               : abnormalcolor),
                           durations: [18000, 8000],
@@ -584,6 +584,7 @@ class _MyWidgetState extends State<Home> {
     var insertResult = await dbHelper.fetchItems();
     var filepath = await convertFile(
         insertResult[0]['secretValue'], insertResult[0]['name']);
+        print("密钥名----------------${insertResult[0]['name']}");
     setState(() {
       path = filepath;
     });
@@ -603,6 +604,7 @@ class _MyWidgetState extends State<Home> {
 
 //请求床位数据
   Future<void> _getList() async {
+    print("在列表");
     File file = File(path);
     Map<String, dynamic> responseData = await api.getListData(file);
 
@@ -688,22 +690,23 @@ class _MyWidgetState extends State<Home> {
     });
   }
 
-  //床位使用时间计时 按10秒调用更新
-  setTime1(i) {
-    usedtime = bedList[i]["usertime"];
+  // //床位使用时间计时 按10秒调用更新
+  // setTime1(i) {
+  //   usedtime = bedList[i]["usertime"];
 
-    _timer1 = Timer.periodic(Duration(milliseconds: 10000), (timer) {
-      usedtime = TimeUtils.incrementTime(usedtime);
+  //   _timer1 = Timer.periodic(Duration(milliseconds: 10000), (timer) {
+  //     usedtime = TimeUtils.incrementTime(usedtime);
 
-      setState(() {
-        usedtime = usedtime;
-      });
+  //     setState(() {
+  //       usedtime = usedtime;
+  //     });
 
-      print("更新后${usedtime},I:$i");
-    });
-  }
+  //     print("更新后${usedtime},I:$i");
+  //   });
+  // }
 
   updateTime(Timer timer) {
+    print("被调用");
     _getList();
   }
 }

@@ -210,25 +210,26 @@ class _LoginIndexState extends State<LoginIndex> {
       //有数据，执行跳转
         Get.off(Home());
     } else {
-      if (Platform.isAndroid) {
-        //数据库无数据，再查内部文件有无密钥  ../../assets/secretkey
-        if (await hasSecret()) {
-          //有数据,将数据存库
-          print("有数据11111111111111");
-          //有数据，将密钥存库
-          if (await openFileExplorer(false)) {
-             Get.off(Home());
-            // Get.to(Home());
-          }
-        } else {
-          print("无数据");
-        }
-        return;
-      } else if (Platform.isIOS) {
-        //查ios端对应路径下有无密钥  ?
+      // if (Platform.isAndroid) {
+      //   //数据库无数据，再查内部文件有无密钥  ../../assets/secretkey
+      //   if (await hasSecret()) {
+      //     //有数据,将数据存库
+      //     print("有数据11111111111111");
+      //     //有数据，将密钥存库
+      //     if (await openFileExplorer(false)) {
+      //        Get.off(Home());
+      //       // Get.to(Home());
+      //     }
+      //   } else {
+      //     print("无数据");
+      //   }
+      //   return;
+      // } else if (Platform.isIOS) {
+      //   //查ios端对应路径下有无密钥 ?
 
-        return;
-      }
+      //   return;
+      // }
+       print("无数据");
     }
   }
 

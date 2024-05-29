@@ -41,13 +41,8 @@ Future<String> readFile1(String fileName) async {
 }
 
 Future<dynamic> uploadFileToProject(bool flag) async {
-  // final directory = await getApplicationDocumentsDirectory();  getExternalStorageDirectory()\
-
-  // final directory = await getExternalStorageDirectory();
-  // final internalfilePath = '${directory!.path}/31010';
-  // print("文文文件路径${directory.path}/31010");
-
-  final internalfilePath = '/storage/emulated/0/31010';
+  // final internalfilePath = '/storage/emulated/0/11020';
+   final directory = await getApplicationDocumentsDirectory();
 
   //用户手动上传
   if (flag) {
@@ -59,14 +54,18 @@ Future<dynamic> uploadFileToProject(bool flag) async {
         var secret = await File(uploadfilePath).readAsString();
 
         //不同平台文件替换方法
-        if (Platform.isAndroid) {
-          replaceFile(uploadfilePath, internalfilePath);
-        } else if (Platform.isIOS) {
-          //将项目内存的密钥替换为用户上传的文件
-          final uploadfilePathforios = await getApplicationDocumentsDirectory();
-          replaceFile(uploadfilePath, uploadfilePathforios.path);
-        }
+        // if (Platform.isAndroid) {
 
+        //   replaceFile(uploadfilePath, directory.path);
+        // } else if (Platform.isIOS) {
+        //   //将项目内存的密钥替换为用户上传的文件
+        //   final uploadfilePathforios = await getApplicationDocumentsDirectory();
+        //   replaceFile(uploadfilePath, uploadfilePathforios.path);
+        // }
+
+        //替换
+        replaceFile(uploadfilePath, directory.path);
+      
         return {'secret': secret, 'name': result.files.first.name};
         //  if (Platform.isAndroid) {} else if (Platform.isIOS) {}//ios读文件
       } else {
@@ -76,14 +75,16 @@ Future<dynamic> uploadFileToProject(bool flag) async {
       // 用户取消了文件选择
       return '';
     }
-  } else {
+  }
+  else {
     //读项目中的密钥
     // 将文件内容读出
-    final internalfilePath = '/storage/emulated/0/31010';
+    final internalfilePath = '/storage/emulated/0/11020';
     File file = File(internalfilePath);
 
     var secret = await file.readAsString();
-    return {'secret': secret, 'name': '31010'};
+
+    return {'secret': secret, 'name': '11020'};
   }
 }
 
@@ -106,18 +107,19 @@ Future<bool> deleteFile() async {
     final directory = await getApplicationDocumentsDirectory();
 
     // final directory = await getExternalStorageDirectory();
-    final filePathforios = directory.path;
+    final filePath = directory.path;
     // final file = File(filePath);
 
-    final filePath = '/storage/emulated/0/31010';
-    var file;
+    // final filePath = '/storage/emulated/0/11020';
+    var file = File(filePath);
 
-    //不同平台文件替换方法
-    if (Platform.isAndroid) {
-      file = File(filePath);
-    } else if (Platform.isIOS) {
-      file = File(filePathforios);
-    }
+    // //不同平台文件替换方法
+    // if (Platform.isAndroid) {
+    //   file = File(filePath);
+    // } else if (Platform.isIOS) {
+    //   file = File(filePathforios);
+    // }
+
 
     // 清空文件内容
     await file.delete();
@@ -155,28 +157,23 @@ Future<bool> hasSecret() async {
   final directory = await getApplicationDocumentsDirectory();
 
   // final directory = await getExternalStorageDirectory();
-  final filePathforios = directory.path;
-  // final file = File(filePath);
+  final filePath = directory.path;
 
-  final filePath = '/storage/emulated/0/31010';
-  var file;
+  var file= File(filePath);
 
-  //不同平台文件替换方法
-  if (Platform.isAndroid) {
-    file = File(filePath);
-  } else if (Platform.isIOS) {
-    file = File(filePathforios);
-  }
+
+
+  
 // 检查文件是否存在
   final exists = await file.exists();
 
   if (exists) {
     print(
-        '文件存在:filePathfilePathfilePathfilePath $filePath,filePathforiosfilePathforiosfilePathforiosfilePathforiosfilePathforios:$filePathforios');
+        '文件存在:filePathfilePathfilePathfilePath $filePath');
     return true;
   } else {
     print(
-        '文件存在:filePathfilePathfilePathfilePath $filePath,filePathforiosfilePathforiosfilePathforiosfilePathforiosfilePathforios:$filePathforios');
+        '文件存在:filePathfilePathfilePathfilePath $filePath');
     return false;
   }
 }
