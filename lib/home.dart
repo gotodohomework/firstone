@@ -378,18 +378,18 @@ class _MyWidgetState extends State<Home> {
   //设备异常信息展示文本
   Widget bedStatus(int i) {
     // String alarm = '未知:${bedList[i]["alarm"]}';
-    String alarm = '无';
-    if (bedList[i]["alarm"] == '01') {
-      alarm = '缺液警告';
-    } else if (bedList[i]["alarm"] == '02') {
-      alarm = '滴速异常';
-    } else if (bedList[i]["alarm"] == '03') {
-      alarm = '设备故障';
-    } else if (bedList[i]["alarm"] == '04') {
-      alarm = '电压警告';
-    } else if (bedList[i]["alarm"] == '00') {
-      alarm = '正常';
-    }
+    // String alarm = '无';
+    // if (bedList[i]["alarm"] == '01') {
+    //   alarm = '缺液警告';
+    // } else if (bedList[i]["alarm"] == '02') {
+    //   alarm = '滴速异常';
+    // } else if (bedList[i]["alarm"] == '03') {
+    //   alarm = '设备故障';
+    // } else if (bedList[i]["alarm"] == '04') {
+    //   alarm = '电压警告';
+    // } else if (bedList[i]["alarm"] == '00') {
+    //   alarm = '正常';
+    // }
 
     return Stack(
       alignment: Alignment.center,
@@ -421,7 +421,7 @@ class _MyWidgetState extends State<Home> {
                 ),
                 SizedBox(height: 8),
                 Text(
-                  "${alarm}",
+                  "${bedList[i]["alarm"]}",
                   style: TextStyle(
                     color: Colors.black, // 可选：设置文本颜色
                     fontSize: 15, // 可选：设置文本字体大小
